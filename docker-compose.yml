@@ -205,6 +205,8 @@ services:
     container_name: thanos_compactor
     volumes:
       - ./data/compactor:/data
+    mem_reservation: 50m
+    mem_limit: 150m
     environment:
       GOMAXPROCS: 1
       GOMEMLIMIT: 100MiB
@@ -245,6 +247,8 @@ services:
     container_name: thanos_store
     volumes:
       - ./data/store:/data
+    mem_reservation: 50m
+    mem_limit: 150m
     environment:
       GOMAXPROCS: 1
       GOMEMLIMIT: 100MiB
