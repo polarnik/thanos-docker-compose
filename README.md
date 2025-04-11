@@ -5,27 +5,16 @@ Run a basic Thanos setup for local development using Docker and Docker Compose.
 ## Prerequisites
 
 - You need to have Docker and docker-compose installed on your machine.
-- We use GNU Make to run common tasks, you need to have `make` installed on your machine. You can run `make -v` to check if it is already installed.
-- Thanos source code. The easiest way to achieve this is by cloning the Thanos git repository locally using `git clone https://github.com/thanos-io/thanos`.
-- You need to have Go installed as it is required to build Thanos.
-- Modify the `THANOS_SOURCE` variable in the `Makefile` so that it points to the directory containing Thanos source code. This step is required to build `thanos` binary from this directory.
 
 ## Usage
 
 ### Start the dev environment
 
-- Run `make up`
-
-> NOTE: If you are using MacOS, run `GOOS=linux make up`. This target tries to build the binary by running `make build` inside the `$THANOS_SOURCE` directory defined in the Makefile, and then gets the `thanos` binary from `$GOPATH/bin/thanos`. You need to set up the `THANOS_SOURCE` variable for this to work.
+- Run `docker compose up`
 
 ### Stop the dev environment
 
-- Run `make down`
-
-### Restarting the env with changes
-
-- We need to build the `thanos` binary again in case of changes in source code, just run `make up` to restart the containers with new changes, it takes care of building the binary for you.
-- If you want to skip building the binary, and just restart the docker containers (for example when you are testing different flags), you can run `make restart` to restart the containers.
+- Run `docker compose down`
 
 ### Checking status of containers
 
