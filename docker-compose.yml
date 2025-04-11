@@ -2,6 +2,12 @@ services:
   prometheus_one:
     image: prom/prometheus:v2.53.4
     container_name: prometheus_one
+    mem_reservation: 100m
+    mem_limit: 550m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 300MiB
+      GOGC: 10
     volumes:
       - ./prometheus:/etc/config/
       - ./data/prometheus/one:/data
@@ -25,6 +31,12 @@ services:
   prometheus_two:
     image: prom/prometheus:v2.53.4
     container_name: prometheus_two
+    mem_reservation: 100m
+    mem_limit: 550m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 300MiB
+      GOGC: 10
     volumes:
       - ./prometheus:/etc/config/
       - ./data/prometheus/two:/data
@@ -50,11 +62,12 @@ services:
       - ./data/minio:/data
     ports:
       - "9000:9000"
+      - "8999:8999"
     environment:
       MINIO_PROMETHEUS_AUTH_TYPE: public
-      MINIO_ROOT_USER: myaccesskey
-      MINIO_ROOT_PASSWORD: mysecretkey
-    command: server /data
+      MINIO_ROOT_USER: ROOTUSER
+      MINIO_ROOT_PASSWORD: CHANGEME123
+    command: server /data --console-address ":8999"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
@@ -67,6 +80,12 @@ services:
     volumes:
       - ./prometheus:/etc/config/
       - ./data/prometheus/one:/data
+    mem_reservation: 50m
+    mem_limit: 150m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "sidecar"
       - "--log.level=debug"
@@ -77,8 +96,8 @@ services:
           --objstore.config=type: S3
           config: 
             bucket: thanos-data-bucket
-            access_key: myaccesskey
-            secret_key: mysecretkey
+            access_key: ROOTUSER
+            secret_key: CHANGEME123
             endpoint: minio:9000
             insecure: true
     expose:
@@ -96,6 +115,12 @@ services:
     volumes:
       - ./prometheus:/etc/config/
       - ./data/prometheus/two:/data
+    mem_reservation: 50m
+    mem_limit: 150m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "sidecar"
       - "--log.level=debug"
@@ -106,8 +131,8 @@ services:
           --objstore.config=type: S3
           config: 
             bucket: thanos-data-bucket
-            access_key: myaccesskey
-            secret_key: mysecretkey
+            access_key: ROOTUSER
+            secret_key: CHANGEME123
             endpoint: minio:9000
             insecure: true
     expose:
@@ -122,6 +147,12 @@ services:
   thanos_querier:
     image: thanosio/thanos:main-2025-04-07-ce2b51f
     container_name: thanos_querier
+    mem_reservation: 50m
+    mem_limit: 150m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "query"
       - "--log.level=debug"
@@ -145,6 +176,12 @@ services:
   thanos_query_frontend:
     image: thanosio/thanos:main-2025-04-07-ce2b51f
     container_name: thanos_query_frontend
+    mem_reservation: 50m
+    mem_limit: 150m
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "query-frontend"
       - "--log.level=debug"
@@ -168,6 +205,10 @@ services:
     container_name: thanos_compactor
     volumes:
       - ./data/compactor:/data
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "compact"
       - "--log.level=debug"
@@ -176,8 +217,8 @@ services:
         --objstore.config=type: S3
         config: 
             bucket: thanos-data-bucket
-            access_key: myaccesskey
-            secret_key: mysecretkey
+            access_key: ROOTUSER
+            secret_key: CHANGEME123
             endpoint: minio:9000
             insecure: true
       - "--data-dir=/data"
@@ -204,6 +245,10 @@ services:
     container_name: thanos_store
     volumes:
       - ./data/store:/data
+    environment:
+      GOMAXPROCS: 1
+      GOMEMLIMIT: 100MiB
+      GOGC: 10
     command:
       - "store"
       - "--log.level=debug"
@@ -211,8 +256,8 @@ services:
         --objstore.config=type: S3
         config: 
             bucket: thanos-data-bucket
-            access_key: myaccesskey
-            secret_key: mysecretkey
+            access_key: ROOTUSER
+            secret_key: CHANGEME123
             endpoint: minio:9000
             insecure: true
       - "--data-dir=/data"

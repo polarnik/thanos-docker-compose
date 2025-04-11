@@ -25,15 +25,16 @@ Refer to `docker-compose` documentation for a full overview.
 
 ### Connecting to minio
 
-After running `make up` you would be able to access `minio` at `http://localhost:9000`. The access key is `myaccesskey` and the secret key is `mysecretkey`.
+After running `docker compose up` you would be able to access `minio` at `http://localhost:40259`. The access key is `myaccesskey` and the secret key is `mysecretkey`.
 
 ## What does it start?
 
 | Service               |                                                                              | Ports |
-| ------------------    | ---------------------------------------------------------------------------- | ----- |
+| ------------------    |------------------------------------------------------------------------------|-------|
 | prometheus_one        | The first Prometheus server                                                  | 9001  |
 | prometheus_two        | The second Prometheus server                                                 |       |
 | minio                 | A minio instance serving as Object Storage for store, compactor and sidecars | 9000  |
+| minio                 | A minio WebUI                                                                | 8999  |
 | thanos_sidecar_one    | First Thanos sidecar for prometheus_one                                      |       |
 | thanos_sidecar_two    | Second Thanos sidecar for prometheus_two                                     |       |
 | thanos_querier        | Thanos querier instance connected to both sidecars and Thanos store          | 10902 |
